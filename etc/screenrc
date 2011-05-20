@@ -1,0 +1,27 @@
+
+# ===========================================
+#                SNTOP.ENV
+# ===========================================
+
+
+
+
+# -------------------------------------------
+# APPLICATION LAUNCHING
+# -------------------------------------------
+
+
+
+# 1 OPENSIM
+# already exists, we monitor it
+  #chdir "~/"
+  screen sh
+  #screen sntop --refresh=30 --ping --log=.sntop/sntopalarm-email.sh --daemon
+  select 1
+  monitor
+
+
+
+
+
+

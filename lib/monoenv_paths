@@ -1,0 +1,9 @@
+#!/bin/sh
+PKG_CONFIG_PATH="/Library/Frameworks/Mono.framework/Versions/2.6.7/share/pkgconfig:/Library/Frameworks/Mono.framework/Versions/2.6.7/lib/pkgconfig:/usr/X11/lib/pkgconfig:$PKG_CONFIG_PATH"
+PATH="/Library/Frameworks/Mono.framework/Versions/2.6.7/bin:$PATH"
+LDFLAGS="-L/Library/Frameworks/Mono.framework/Versions/2.6.7/lib $LDFLAGS"
+CPPFLAGS="-I/Library/Frameworks/Mono.framework/Versions/2.6.7/include $CPPFLAGS"
+LD_LIBRARY_PATH="/Library/Frameworks/Mono.framework/Versions/2.6.7/lib:$LD_LIBRARY_PATH"
+MANPATH="/Library/Frameworks/Mono.framework/Versions/2.6.7/share/man:/Library/Frameworks/Mono.framework/Versions/2.6.7/man:$MANPATH"
+PERL5LIB="/Library/Frameworks/Mono.framework/Versions/2.6.7/lib/perl5/site_perl:$PERL5LIB"
+export PKG_CONFIG_PATH PATH LDFLAGS CPPFLAGS LD_LIBRARY_PATH MANPATH PERL5LIB MACOSX_DEPLOYMENT_TARGET

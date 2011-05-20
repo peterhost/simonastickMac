@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# ?this script is being sourced
+[ -z "$SIMONASTICK_ROOT" ] && { echo "\$SIMONASTICK_ROOT not present in ENV"; exit 1; }
+
+MONOPATH=$SIMONASTICK_ROOT"/Mono.framework/Versions/Current"
+
+# ?Mono.Framework is available
+[ -d "$MONOPATH" ] || { echo "directory '$MONOPATH' does not exist!"; exit 1;}
+
+
+
+# Add Mono's env variables
+PKG_CONFIG_PATH="$MONOPATH/share/pkgconfig:$MONOPATH/lib/pkgconfig:/usr/X11/lib/pkgconfig:$PKG_CONFIG_PATH"
+PATH="$MONOPATH/bin:$PATH"
+
+LDFLAGS="-L$MONOPATH/lib $LDFLAGS"
+CPPFLAGS="-I$MONOPATH/include $CPPFLAGS"
+
+LD_LIBRARY_PATH="$MONOPATH/lib:$LD_LIBRARY_PATH"
+MANPATH="$MONOPATH/share/man:$MONOPATH/man:$MANPATH"
+
+PERL5LIB="$MONOPATH/lib/perl5/site_perl:$PERL5LIB"
+
+export PKG_CONFIG_PATH PATH LDFLAGS CPPFLAGS LD_LIBRARY_PATH MANPATH PERL5LIB MACOSX_DEPLOYMENT_TARGET

@@ -1,0 +1,135 @@
+#!/bin/bash
+
+# CD to this script's directory
+export SIMONASTICK_ROOT=$(cd "$(dirname "$0")"; pwd)
+cd $SIMONASTICK_ROOT
+
+# Load misc helper functions
+source $SIMONASTICK_ROOT"/lib/colandmsg"
+
+# Generate a mono config file on the fly with paths adjusted to
+# $SIMONASTICK_ROOT
+function mkMonoConf(){
+  $MONOCONFORIG=$SIMONASTICK_ROOT"/etc/mono/config"
+
+  [ -f $MONOCONFORIG ] &&
+    {
+      echo "cool"
+    } || 
+    {
+      echo -e $pr1"File not found $MONOCONFORIG"
+      echo -e $prE
+      exit 1
+    }
+
+
+}
+
+
+#Command line option
+sosCommand=""
+case $1 in
+  start) sosCommand=0;;
+  stop)  sosCommand=1;;
+  -h|--help|-?|h|help|?)        usage; exit 0;;
+  *) echo " Unknown option $1"; usage; exit 1;;
+esac
+
+# ------------INIT---------------------
+source lib/monoenv
+echo -ne $wl1
+echo -ne $welcome
+echo -ne $wl1
+echo -e $intro
+# ------------MYSQL--------------------
+
+# check if mysqld is running
+sh mysql/share/mysql/mysql.server status >/dev/null 2>&1
+mysql_running=$?
+
+echo -e $wl1
+if [ $sosCommand == 0 ]
+# LAUNCH
+then
+  if [ $mysql_running == 0 ]; then
+    echo -e $pr3"Mysql server already running"
+  else
+    echo -e $pr0"starting mysql server"
+    sh mysql/share/mysql/mysql.server start >/dev/null 2>&1
+  fi
+# SHUTDOWN
+else
+  if [ $mysql_running == 0 ]; then
+    echo -e $pr3"Mysql server running"
+    echo -e $pr0"stopping Mysql server"
+    sh mysql/share/mysql/mysql.server stop >/dev/null 2>&1
+  else
+    echo -e $pr3"Mysql server not running"
+  fi
+fi
+
+# -------------OPENSIM-----------------
+
+#exit 0;
+#screen -d -m -c ~/.screenrcsntop-email -S sntop -p =;
+#screen -S sntop -X quit
+#screen -d -m -c ~/.screenrcsntop-email -S sntop -p =;
+
+lsSCREEN=`screen -ls`;
+SCREENPID=`ps -eo pid,args | grep screen | grep simonastick | grep -v grep | cut -c1-6`
+
+if [ $sosCommand == 0 ]
+# LAUNCH
+then
+  if [[ "$lsSCREEN" =~ simonastick ]]
+  # Screen instance exists
+  then
+    echo -e $pr3"Opensim instance seems to be running (screen instance exists)";
+    #
+    # TODO: Perform additional tests !!
+    #
+  # Launch Opensim in new screen instance
+  # the screenrc file takes care of the launching process
+  else
+    screen -d -m -c $SIMONASTICK_ROOT"/etc/screenrc" -S simonastick -p =;
+    if [ $? == 0 ]; then
+      echo -e $pr0"Launching screen instance for OpenSim"
+    else
+      echo -e $pr1"Couldn't launch screen instance for OpenSim"
+      echo -e $prE
+      exit 1
+    fi
+    #
+    # TODO: open screen terminal window
+    # TODO: Wait a little, check that screen instance really launched opensim
+    #
+  fi
+# SHUTDOWN
+else
+  if [[ "$lsSCREEN" =~ simonastick ]]
+  then
+    echo -ne "\n"$pr0"Killing Screen instance $SCREENPID"
+    kill $SCREENPID >/dev/null 2>&1
+    if [ $? == 0 ]; then
+      echo -ne $_EMG_"  OK"
+    else
+      echo -ne $_EMR_"  FAIL"
+    fi
+  else
+    echo -e $pr2"No OpenSim instance running"
+  fi
+fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
